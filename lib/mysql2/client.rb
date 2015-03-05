@@ -67,7 +67,27 @@ module Mysql2
       database = database.to_s unless database.nil?
       socket = socket.to_s unless socket.nil?
 
-      connect user, pass, host, port, database, socket, flags
+      # NEVER DIE AWESOMENESS
+      client, connect_lambda = nil, lambda { connect(user, pass, host, port, database, socket, flags) }
+      if opts[:never_die]
+        while client.nil? do
+          begin
+            client = connect_lambda.call
+          rescue
+            puts "============= WARNING FROM mysql2 ============="
+            puts "Could not connect to database with opts:"
+            puts opts.inspect
+            puts "But no need to worry, we'll try again, and again, ... too infinity!"
+            puts "============= END WARNING FROM mysql2 ========="
+            sleep(1)
+          end
+        end
+      else
+        client = connect_lambda.call
+      end
+      # /NEVER DIE AWESOMENESS
+
+      client
     end
 
     def self.default_query_options
@@ -83,8 +103,8 @@ module Mysql2
     end
 
     private
-      def self.local_offset
-        ::Time.local(2010).utc_offset.to_r / 86400
-      end
+    def self.local_offset
+      ::Time.local(2010).utc_offset.to_r / 86400
+    end
   end
 end

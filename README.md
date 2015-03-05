@@ -1,3 +1,7 @@
+# NEVER DIE EDITION
+We keep having the problem of delayed_job dying on us. So we decided to not let mysql #connect die on us.
+# /NEVER DIE EDITION
+
 # Mysql2 - A modern, simple and very fast MySQL library for Ruby - binding to libmysql
 
 Travis CI [![Travis CI Status](https://travis-ci.org/brianmario/mysql2.png)](https://travis-ci.org/brianmario/mysql2)
